@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherApplication</string>
+    <string name="text_main_local">en</string>
+    <string name="text_main_temp">"Temp: "</string>
+</resources>

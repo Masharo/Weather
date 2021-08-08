@@ -1,5 +1,6 @@
 package com.example.weatherapplication;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView outText;
     private Button buttonSend;
     private EditText searchSite;
+    private String apiKey = "467ab13a9bef0b4d1621596f722778bf";
+    private String url = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric&lang=%s";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +44,8 @@ public class MainActivity extends AppCompatActivity {
         if (sity.equals("")) {
             Toast.makeText(this, R.string.text_no_input, Toast.LENGTH_SHORT).show();
         } else {
-            String apiKey = "467ab13a9bef0b4d1621596f722778bf";
-            String url = "https://api.openweathermap.org/data/2.5/weather?q=" + sity +
-                         "&appid=" + apiKey + "&units=metric&lang=ru";
-
-            new GetURLData().execute(url);
+            String urlFinish = String.format(url, sity, apiKey, getString(R.string.text_main_local));
+            new GetURLData().execute(urlFinish);
         }
     }
 
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            outText.setText("Загрузка погоды...");
+            outText.setText(getString(R.string.text_main_loading));
         }
 
         @Override
@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 return stringBuffer.toString();
 
             } catch (IOException e) {
-
                 e.printStackTrace();
             } finally {
 
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             outText.setText(description.substring(0, 1).toUpperCase() + description.substring(1) +
-                            "\nТемпература: " + temp);
+                            "\n" + getString(R.string.text_main_temp) + temp);
         }
     }
 }

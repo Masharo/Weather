@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">WeatherApplication</string>
-    <string name="text_title_main">Я помогу вам узнать погоду</string>
-    <string name="btn_text_main">Узнать погоду</string>
-    <string name="text_hint_city">Укажите город</string>
-    <string name="text_no_input">Введите название города</string>
+    <string name="text_title_main" translatable="false">Я помогу вам узнать погоду</string>
+    <string name="btn_text_main" translatable="false">Узнать погоду</string>
+    <string name="text_hint_city" translatable="false">Укажите город</string>
+    <string name="text_no_input" translatable="false">Введите название города</string>
+    <string name="text_main_loading" translatable="false">Загрузка погоды…</string>
+    <string name="text_main_temp">Температура: </string>
+    <string name="text_main_local">ru</string>
 </resources>
