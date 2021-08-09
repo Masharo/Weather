@@ -1,8 +1,10 @@
 package com.example.weatherapplication;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,11 +25,13 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String CITY = "CITY";
     private TextView outText;
     private Button buttonSend;
     private EditText searchSite;
-    private String apiKey = "467ab13a9bef0b4d1621596f722778bf";
-    private String url = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric&lang=%s";
+    private static String API_KEY = "467ab13a9bef0b4d1621596f722778bf";
+    private static String URL = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric&lang=%s";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +41,24 @@ public class MainActivity extends AppCompatActivity {
         outText = findViewById(R.id.text_out);
         searchSite= findViewById(R.id.text_input);
         buttonSend = findViewById(R.id.btn_weather);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if (sharedPreferences.contains(CITY)) {
+            String lastCity = sharedPreferences.getString(CITY, "");
+            searchSite.setText(lastCity);
+            onClickButton(buttonSend);
+        }
     }
 
     public void onClickButton(View view) {
-        String sity = searchSite.getText().toString().trim();
-        if (sity.equals("")) {
+        String city = searchSite.getText().toString().trim();
+        if (city.equals("")) {
             Toast.makeText(this, R.string.text_no_input, Toast.LENGTH_SHORT).show();
         } else {
-            String urlFinish = String.format(url, sity, apiKey, getString(R.string.text_main_local));
+            String urlFinish = String.format(URL, city, API_KEY, getString(R.string.text_main_local));
             new GetURLData().execute(urlFinish);
+            sharedPreferences.edit().putString(CITY, city).apply();
         }
     }
 
