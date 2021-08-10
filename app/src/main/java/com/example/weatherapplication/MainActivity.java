@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,26 +71,38 @@ public class MainActivity extends AppCompatActivity {
             outText.setText(getString(R.string.text_main_loading));
         }
 
+        private StringBuffer getData(InputStream inputStream, BufferedReader reader) throws IOException {
+
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                stringBuffer.append(line).append("\n");
+            }
+
+            return stringBuffer;
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             HttpURLConnection connection = null;
             BufferedReader reader = null;
+            StringBuffer stringBuffer = null;
 
             try {
                 URL url = new URL(strings[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
+                InputStream errorStream = connection.getErrorStream();
 
-                InputStream inputStream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(inputStream));
+                if (errorStream != null) {
 
-                StringBuffer stringBuffer = new StringBuffer();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    stringBuffer.append(line).append("\n");
+                    stringBuffer = getData(errorStream, reader);
+                    return stringBuffer.toString();
                 }
 
+                stringBuffer = getData(connection.getInputStream(), reader);
                 return stringBuffer.toString();
 
             } catch (IOException e) {
@@ -122,13 +135,26 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 JSONObject json = new JSONObject(result);
+                if (json.getInt("cod") != 200) {
+                    if (json.getString("message").equals("city not found")) {
+                        Toast.makeText(getApplicationContext(), R.string.text_main_citynotfound, Toast.LENGTH_SHORT).show();
+                    } else {
+                        String error = getString(R.string.text_main_unknownerror);
+                        error = String.format(error, json.getString("message"));
+                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+
+                    outText.setText("");
+                    return;
+                }
+
                 temp = json.getJSONObject("main").getDouble("temp");
                 description = json.getJSONArray("weather").getJSONObject(0).getString("description");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             outText.setText(description.substring(0, 1).toUpperCase() + description.substring(1) +
-                            "\n" + getString(R.string.text_main_temp) + temp);
+                            "\n" + String.format(getString(R.string.text_main_temp), temp));
         }
     }
 }

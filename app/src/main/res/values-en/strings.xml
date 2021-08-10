@@ -2,5 +2,7 @@
 <resources>
     <string name="app_name">WeatherApplication</string>
     <string name="text_main_local">en</string>
-    <string name="text_main_temp">"Temp: "</string>
+    <string name="text_main_temp">"Temp: %.02f"</string>
+    <string name="text_main_citynotfound">City not found</string>
+    <string name="text_main_unknownerror">Unknown error: %s</string>
 </resources>

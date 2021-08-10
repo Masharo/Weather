@@ -5,6 +5,8 @@
     <string name="text_hint_city" translatable="false">Укажите город</string>
     <string name="text_no_input" translatable="false">Введите название города</string>
     <string name="text_main_loading" translatable="false">Загрузка погоды…</string>
-    <string name="text_main_temp">Температура: </string>
+    <string name="text_main_temp">Температура: %.02f</string>
     <string name="text_main_local">ru</string>
+    <string name="text_main_citynotfound">Указанный город не найден</string>
+    <string name="text_main_unknownerror">Необработанная ошибка: %s</string>
 </resources>
